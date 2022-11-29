@@ -1,6 +1,8 @@
 ﻿using BenchmarkDotNet.Running;
+using Iced.Intel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -85,12 +87,14 @@ namespace DynamicGroup
             //    new Student(14,"金轮法王","男",68),
             //};
 
-            //var comp = new CommonComparer<Student>(new string[1] { "Name" });
-            //var groups = students.GroupBy(s => s, comp);
+            //var exp = ExpressionGroup.Builder<Student>(new string[2] { "Gender", "Age" });
+            //var func = exp.Compile();
+            ////var comp = new CommonComparer<Student>(new string[1] { "Name" });
+            //var groups = students.GroupBy(func);
 
             //foreach (var group in groups)
             //{
-            //    Console.WriteLine($"分组依据：{group.Key.Gender}{group.Key.Age}==========");
+            //    Console.WriteLine($"==========");
             //    foreach (var s in group)
             //    {
             //        Console.WriteLine(s.ToString());
@@ -133,10 +137,11 @@ namespace DynamicGroup
 
             public bool Equals(T x, T y)
             {
+                var type = typeof(T);
                 foreach (var p in _propertyInfos)
                 {
-                    dynamic value1 = x.GetType().GetProperty(p.Name).GetValue(x);
-                    dynamic value2 = x.GetType().GetProperty(p.Name).GetValue(y);
+                    dynamic value1 = type.GetProperty(p.Name).GetValue(x);
+                    dynamic value2 = type.GetProperty(p.Name).GetValue(y);
                     if (value1 != value2)
                     {
                         return false;
